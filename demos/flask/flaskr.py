@@ -1,11 +1,11 @@
 import ConfigParser
 import duo_web as duo
 from contextlib import closing
-from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash
+from flask import Flask, request, session, redirect, url_for, render_template, flash
+
 
 # config
 DEBUG = True
-SECRET_KEY = 'dev key'
 
 
 # create flask application
@@ -40,12 +40,12 @@ def show_entries():
 
 @app.route('/mfa', methods=['GET', 'POST'])
 def mfa():
-    result = grab_keys()
-    sec = duo.sign_request(result['ikey'], result['skey'], result['akey'], session['user'])
+    duoConf = grab_keys()
+    sec = duo.sign_request(duoConf['ikey'], duoConf['skey'], duoConf['akey'], session['user'])
     if request.method == 'GET':
-        return render_template('duoframe.html', duohost=result['host'], sig_request=sec)
+        return render_template('duoframe.html', duohost=duoConf['host'], sig_request=sec)
     if request.method == 'POST':
-        user = duo.verify_response(result['ikey'], result['skey'], result['akey'], request.args.get('sig_response'))
+        user = duo.verify_response(duoConf['ikey'], duoConf['skey'], duoConf['akey'], request.args.get('sig_response'))
         if user == session['user']:
             return render_template(url_for('mfa'), user=user)
 
@@ -60,11 +60,11 @@ def login():
     error = None
     if request.method == 'POST':
         if request.form['username'] == "":
-            error = 'Invalid Username. Please type something.'
+            error = 'Type something in the username field.'
         else:
             session['logged_in'] = True
             session['user'] = request.form['username']
-            flash('You were logged in')
+            flash('You are logged in')
             return redirect(url_for('mfa'))
     return render_template('login.html', error=error)
 
