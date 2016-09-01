@@ -3,7 +3,7 @@
 ## Flaskr + DUO = 2FA your login
 
 ## How to use
-Assuming you already have Flaskr setup just run ``` python flaskr.py ``` in the main directory of this repository.
+Assuming you already have Flask setup just run ``` python flaskr.py ``` in the main directory of this repository.
 Open a browser session to the URL specified by Flask. By default it is ```http://127.0.0.1:5000/```
 
 Please see the section on **Configuration Files** to setup your authentication keys. The
@@ -20,10 +20,9 @@ This application relies on two configuration files that follow the standard .ini
 ; My App configuration
 
 [app]
-skey = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+skey = <application specific session key>
 ```
-The skey above should is used to sign the session cookie for login. It can be any alphanumeric string of 40 or greater.
-This will be read through ConfigParser() into a dictionary. The values can be accessed as
+The skey above should is used to sign the session cookie for login. This will be read through ConfigParser() into a dictionary. The values can be accessed as
 
     config.get('app','skey')
 
